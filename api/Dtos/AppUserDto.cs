@@ -1,0 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace api.Dtos;
+
+// public record AppUserDto(
+//     string Id,
+//     string Email
+// );
+
+public record AppUserDto(
+    string Id,
+    string Email
+);
