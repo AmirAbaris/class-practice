@@ -2,6 +2,7 @@
 using api.Models;
 using api.Settings;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace api.Controllers;
@@ -68,5 +69,45 @@ public class AppUserController : ControllerBase
         }
     }
 
+    [HttpDelete("delete-by-id/{idInput}")]
+    public ActionResult<DeleteResult> DeleteById(string idInput)
+    {
+        DeleteResult deleteResult = _collection.DeleteOne<AppUser>(user => user.Id == idInput);
 
+        return deleteResult;
+    }
+
+    [HttpPut("update-by-email/{emailInput}")]
+    public ActionResult<UpdateResult> UpdateByEmail(string emailInput, AppUser appUserInput)
+    {
+        // Check if email exist
+        // bool emailExist = _collection.Find<AppUser>(user => user.Email == emailInput.ToLower().Trim()).Any();
+
+        // if (emailExist == false)
+        // {
+        //     return NotFound();
+        // }
+
+        var userUpdate = Builders<AppUser>.Update
+        .Set(user => user.Email, appUserInput.Email.ToLower().Trim())
+        .Set(user => user.Password, appUserInput.Password)
+        .Set(user => user.ConfirmPassword, appUserInput.ConfirmPassword);
+
+        UpdateResult updateResult = _collection.UpdateOne(user => user.Email == emailInput.ToLower().Trim(), userUpdate);
+
+        return updateResult;
+    }
+
+    [HttpGet("get-all")]
+    public ActionResult<IEnumerable<AppUser>> GetAll()
+    {
+        List<AppUser> users = _collection.Find<AppUser>(new BsonDocument()).ToList();
+
+        return users;
+
+        // if (users.Any() == false)
+        // {
+        //     NotFound();
+        // }
+    }
 }
