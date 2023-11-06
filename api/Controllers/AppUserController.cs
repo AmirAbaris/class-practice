@@ -23,35 +23,35 @@ public class AppUserController : ControllerBase
         // _appUserRepository = appUserRepository;
     }
 
-    [HttpPost("register")]
-    public ActionResult<AppUser> Create(AppUser userInput)
-    {
-        // Check passwords match
-        if (userInput.Password != userInput.ConfirmPassword)
-        {
-            return BadRequest(" passwords not match");
-        }
+    // [HttpPost("register")]
+    // public ActionResult<AppUser> Create(AppUser userInput)
+    // {
+    //     // Check passwords match
+    //     if (userInput.Password != userInput.ConfirmPassword)
+    //     {
+    //         return BadRequest(" passwords not match");
+    //     }
 
-        // Check email already exist
-        bool emailExist = _collection.Find<AppUser>(user => user.Email == userInput.Email.ToLower().Trim()).Any();
+    //     // Check email already exist
+    //     bool emailExist = _collection.Find<AppUser>(user => user.Email == userInput.Email.ToLower().Trim()).Any();
 
-        if (emailExist == true)
-        {
-            return BadRequest("user already exist");
-        }
+    //     if (emailExist == true)
+    //     {
+    //         return BadRequest("user already exist");
+    //     }
 
-        // Create a obj
-        AppUser appUser = new(
-            Id: null,
-            Email: userInput.Email.ToLower().Trim(),
-            Password: userInput.Password,
-            ConfirmPassword: userInput.ConfirmPassword
-        );
+    //     // Create a obj
+    //     AppUser appUser = new(
+    //         Id: null,
+    //         Email: userInput.Email.ToLower().Trim(),
+    //         Password: userInput.Password,
+    //         ConfirmPassword: userInput.ConfirmPassword
+    //     );
 
-        _collection.InsertOne(appUser);
+    //     _collection.InsertOne(appUser);
 
-        return appUser;
-    }
+    //     return appUser;
+    // }
 
     [HttpPost("login")]
     public ActionResult<AppUser> Login(AppUser userInput)

@@ -9,8 +9,3 @@ namespace api.Dtos;
 //     string Id,
 //     string Email
 // );
-
-public record AppUserDto(
-    string Id,
-    string Email
-);
