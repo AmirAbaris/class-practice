@@ -1,5 +1,7 @@
 // using api.Interfaces;
 // using api.Repositories;
+using api.Interfaces;
+using api.Repositories;
 using api.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -36,6 +38,8 @@ builder.Services.AddCors(options =>
 #endregion Cors
 
 // Add services to the container.
+
+builder.Services.AddScoped<IAppUserAccountRepository, AppUserAccountRepository>();
 
 builder.Services.AddControllers();
 

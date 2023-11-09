@@ -1,4 +1,5 @@
 // using api.Interfaces;
+using api.Interfaces;
 using api.Models;
 using api.Settings;
 using Microsoft.AspNetCore.Mvc;
@@ -11,40 +12,23 @@ namespace api.Controllers;
 [Route("api/[controller]")]
 public class AppUserAccountController : ControllerBase
 {
-    private const string _collectionName = "users";
-    private readonly IMongoCollection<AppUser> _collection;
-    // // private readonly IAppUserRepository _appUserRepository;
+    private readonly IAppUserAccountRepository _appUserAccountRepository;
 
     // Dependency Injection
-    public AppUserAccountController(IMongoClient client, IMongoDbSettings dbSettings)
+    public AppUserAccountController(IAppUserAccountRepository appUserAccountRepository)
     {
-        var dbName = client.GetDatabase(dbSettings.DatabaseName);
-        _collection = dbName.GetCollection<AppUser>(_collectionName);
-        // _appUserRepository = appUserRepository;
+        _appUserAccountRepository = appUserAccountRepository;
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> Create(RegisterDto userInput)
+    public async Task<ActionResult<AppUserDto>> Create(RegisterDto userInput, CancellationToken cancellationToken)
     {
-        // Check if user already exist
-        bool userExist = await _collection.Find<AppUser>(user => user.Email == userInput.Email.ToLower().Trim()).AnyAsync();
+        AppUserDto? appUserDto = await _appUserAccountRepository.Create(userInput, cancellationToken);
 
-        if (userExist)
-            return BadRequest("fuck you, this is already registered");
+        if (appUserDto is null)
+            return BadRequest();
 
-        // Create a obj of appuser
-        AppUser appUser = new(
-            Id: null,
-            Email: userInput.Email.ToLower().Trim(),
-            Password: userInput.Password,
-            ConfirmPassword: userInput.ConfirmPassword
-        );
-
-        // Save created obj to database
-        await _collection.InsertOneAsync(appUser);
-
-        // Return result
-        return appUser;
+        return appUserDto;
     }
 }
 //     private const string _collectionName = "users";
